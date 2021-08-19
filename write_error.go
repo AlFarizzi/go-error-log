@@ -10,7 +10,7 @@ import (
 
 type Errors Error
 
-func CreateFolder() {
+func createFolder() {
 	// create folder
 	err := os.Mkdir("log", 0700)
 	if err != nil {
@@ -19,7 +19,7 @@ func CreateFolder() {
 	}
 }
 
-func CreateFile(name string) *os.File {
+func createFile(name string) *os.File {
 	path := fmt.Sprintf("%s/%s", "log/", name)
 	file, err := os.Create(path)
 	if err != nil {
@@ -29,8 +29,8 @@ func CreateFile(name string) *os.File {
 	return file
 }
 
-func WriteIntoJson(fileName string, data []byte) {
-	file := CreateFile(fileName)
+func writeIntoJson(fileName string, data []byte) {
+	file := createFile(fileName)
 	file.Write(data)
 	file.Sync()
 	file.Close()
@@ -43,7 +43,7 @@ func WriteError(fileName string, errMessage string) {
 	// check is folder exist
 	_, err := os.Stat("log")
 	if os.IsNotExist(err) == true {
-		CreateFolder()
+		createFolder()
 	}
 
 	// check file is exist
@@ -54,7 +54,7 @@ func WriteError(fileName string, errMessage string) {
 		// file not exist
 		current = append(current, Error{Time: time.Now(), Error: errMessage})
 		json, _ := json.Marshal(current)
-		WriteIntoJson(fileName, json)
+		writeIntoJson(fileName, json)
 
 	} else {
 		// file exist
@@ -71,6 +71,6 @@ func WriteError(fileName string, errMessage string) {
 		}
 		current = append(current, Error{Time: time.Now(), Error: errMessage})
 		json, err := json.MarshalIndent(current, "", " ")
-		WriteIntoJson(fileName, json)
+		writeIntoJson(fileName, json)
 	}
 }
